@@ -24,7 +24,7 @@ function startFunction() {
 
 function gotMedia(stream) {
   theStream = stream;
-  var video = document.querySelector("video");
+  var video = document.querySelector("#video");
   video.srcObject = stream;
   try {
     mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm" });
@@ -37,22 +37,24 @@ function gotMedia(stream) {
     recordedChunks.push(event.data);
   };
   mediaRecorder.start(100);
-
+  let start = 0;
   stopInterval = setInterval(() => {
     count++;
     const formData = new FormData();
-    const blob = new Blob(recordedChunks, { type: "video/webm" });
-    formData.append("video", blob, "myvideo.webm");
+    const length = recordedChunks.length;
+    console.log(recordedChunks.slice(start, length));
+    const blob = new Blob(recordedChunks.slice(start, length), {
+      type: "video/webm",
+    });
+    start = length;
+    formData.append("video", blob, "recorded-chunk.webm");
     fetch("http://localhost:5000/segment", {
       method: "POST",
       headers: {
         "X-segment-id": count,
       },
       body: formData,
-    })
-      .then((res) => res.json())
-      .then((response) => console.log("Success:", JSON.stringify(response)))
-      .catch((error) => console.error("Error:", error));
+    }).then((res) => res);
 
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
@@ -64,7 +66,6 @@ function gotMedia(stream) {
     setTimeout(function () {
       URL.revokeObjectURL(url);
     }, 100);
-    recordedChunks = [];
   }, 3000);
 }
 
@@ -86,23 +87,12 @@ function view() {
   video.src = URL.createObjectURL(mediaSource);
 
   mediaSource.addEventListener("sourceopen", () => {
-    const sourceBuffer = mediaSource.addSourceBuffer(
-      'video/webm; codecs="vp8, opus"'
-    );
-
-    for (let i = 1; i < 3; i++) {
-      fetch(`http://localhost:5000/segment/${i}`, {
-        method: "GET",
-        headers: {
-          "Content-Type":
-            "multipart/form-data; boundary=----WebKitFormBoundaryFHADkzAysWPfmhB3",
-        },
-      })
-        .then((response) => response.arrayBuffer())
-        .then((segment) => {
-          console.log(segment);
-        });
-    }
+    fetch("http://localhost:5000/segment/video")
+    .then(response => response.blob())
+    .then(blob => {
+      const videoUrl = URL.createObjectURL(blob);
+      video.src = videoUrl;
+    });
   });
 }
 

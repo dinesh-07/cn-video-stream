@@ -57,7 +57,6 @@ app.get("/segment/video", (req, res) => {
   let sql = `SELECT * FROM segment WHERE segment_id = ${segment_id}`;
   db.query(sql, (err, result) => {
     if (err) throw err;
-    console.log(result[0].segment);
     res.send(result[0].segment);
   });
 });
