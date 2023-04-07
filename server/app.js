@@ -20,8 +20,7 @@ db.connect((err) => {
 var cors = require("cors");
 const app = express();
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer();
 
 app.use(cors());
 
@@ -53,18 +52,25 @@ app.get("/createsegmenttable", (req, res) => {
   });
 });
 
-app.get("/segment/:id", (req, res) => {
-    let sql = `SELECT * FROM segment WHERE segment_id = ${req.params.id}`;
-    db.query(sql, (err, result) => {
-        if (err) throw err;
-        console.log(result);
-        res.send(result);
-    });
+app.get("/segment/video", (req, res) => {
+  const segment_id = 1;
+  let sql = `SELECT * FROM segment WHERE segment_id = ${segment_id}`;
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    console.log(result[0].segment);
+    res.send(result[0].segment);
+  });
 });
 
-app.post("/segment", upload.single("video"), (req, res) => {
+app.get("/video", async (req, res) => {
+  const [result] = await connection.execute("SELECT * FROM segment");
+  const chunks = result.map((row) => row.segment);
+  res.render("video", { chunks });
+});
+
+app.post("/segment", upload.single("video"), async (req, res) => {
   const segment_id = +req.headers["x-segment-id"];
-  let segment = { segment: req.file, segment_id: segment_id };
+  let segment = { segment: req.file.buffer, segment_id: segment_id };
   let sql = "INSERT INTO segment SET ?";
   db.query(sql, segment, (err, result) => {
     if (err) throw err;
