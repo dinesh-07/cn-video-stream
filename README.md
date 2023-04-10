@@ -44,4 +44,16 @@ $ index.html
 $ cd client
 $ view.html
 ```
+### Demo
 
+#### Live Recording
+![](videorecord.png)
+
+#### Live Watch
+![](watch.png)
+
+#### Live Video Segmentation
+![](segment.png)
+
+#### Save segment on database
+![](db.png)
