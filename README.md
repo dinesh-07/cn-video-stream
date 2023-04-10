@@ -1,5 +1,9 @@
 # Application/Transport Layers (A Video Streaming Application)
 
+##Team10:
+Sindoora Rao 40199155
+Dinesh Kini Bailoor 40231799
+
 ### Install the following dependencies
 
 #### Node
