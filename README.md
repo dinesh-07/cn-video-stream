@@ -57,3 +57,18 @@ $ view.html
 
 #### Save segment on database
 ![](db.png)
+
+### Description
+
+#### Client Side
+We have used a Webm media recorder.
+Briefly our client has the following methods:
+1. StartFunction
+2. gotMedia
+3. Stop
+4. Reset
+5. View
+6. Download
+
+
+
