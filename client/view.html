@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Live Video Recording</title>
+    <title>Live View Recording</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -14,17 +14,11 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div id="overview">Live Video Streaming</div>
+    <div id="overview">Live View Recording</div>
     <div class="container">
-      <video id="video" autoplay controls></video>
+      <video id="myVideo" autoplay controls></video>
       <div class="buttons">
-        <p>
-          <button onclick="startFunction()" class="btn btn-primary">
-            Start
-          </button>
-        </p>
-        <p><button onclick="stop()" class="btn btn-danger">Stop</button></p>
-        <p><button onclick="reset()" class="btn btn-warning">Reset</button></p>
+        <p><button onclick="view()" class="btn btn-success">View Recording</button></p>
       </div>
     </div>
     <script
