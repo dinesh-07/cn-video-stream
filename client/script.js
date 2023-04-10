@@ -1,9 +1,12 @@
 const constraints = {
   video: {
-    width: { exact: 1280 },
-    height: { exact: 720 },
-    frameRate: { exact: 30 },
+    width: { exact: 1280 }, 
+    height: { exact: 720 }, // 720p resolution
+    frameRate: { exact: 30 }, // 30 fps
+    bitrate: { exact: 5000000 }, // 5 Mbps bitrate (5,000,000 bits per second)
+    codec: "vp9", // VP9 video codec
   },
+  audio: true,
 };
 
 let recordedChunks = [];
