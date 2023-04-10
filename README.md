@@ -70,6 +70,7 @@ $ view.html
 ### Description
 
 #### Client Side
+```bash
 We have used a Webm media recorder.
 Briefly our client has the following methods:
 1. StartFunction : Is entry point to the application functionality. Executes when user clicks on start button in index.html. This method, internally calls gotMedia which holds the client side logic for segmenting and related calls for uploading video to server.
@@ -78,6 +79,13 @@ Briefly our client has the following methods:
 4. Reset : Called when client clicks on Reset button. The method simple resets the server database
 5. View : This method is assiciated with the view button on view.html file. It is responsible for fetching the video from the server and playing it on client side. For now we are just fetching the first segment.As a part of next lab assignment we will be implementing the part of fetching all the segments from database and playing on the client side.
 6. Download : We have added this extra functionality at the client side that downloads the video segement as and when we upload it to database. This we have included for our purpose of testing. This can be removed in the last deliverable.
-
-
+```
+#### Server Side
+```bash
+Our Server is responsible for the following tasks :
+1. Setting up the MySQL database connection.
+2. Creating Database, creating a table to store the database.
+3. Uploading segments on to the databse by performing insert query whenever POST method is called at the client side.
+4. Fetching the segments performing query when user clicks on view.
+```
 
