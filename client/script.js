@@ -1,6 +1,6 @@
 const constraints = {
   video: {
-    width: { exact: 1280 }, 
+    width: { exact: 1280 },
     height: { exact: 720 }, // 720p resolution
     frameRate: { exact: 30 }, // 30 fps
     bitrate: { exact: 5000000 }, // 5 Mbps bitrate (5,000,000 bits per second)
@@ -14,7 +14,6 @@ let mediaRecorder;
 let theStream;
 
 let stopInterval;
-let count = 0;
 
 function startFunction() {
   navigator.mediaDevices
@@ -41,6 +40,8 @@ function gotMedia(stream) {
   };
   mediaRecorder.start(100);
   let start = 0;
+  let newRecording = true;
+  let count = 0;
   stopInterval = setInterval(() => {
     count++;
     const formData = new FormData();
@@ -55,6 +56,7 @@ function gotMedia(stream) {
       method: "POST",
       headers: {
         "X-segment-id": count,
+        "X-segment-start": newRecording,
       },
       body: formData,
     }).then((res) => res);
@@ -66,6 +68,7 @@ function gotMedia(stream) {
     a.href = url;
     a.download = `segment${count}.webm`;
     a.click();
+    newRecording = false;
     setTimeout(function () {
       URL.revokeObjectURL(url);
     }, 100);
@@ -84,18 +87,65 @@ function reset() {
   fetch("http://localhost:5000/");
 }
 
+const listGroup = document.getElementById("list-group");
+if (listGroup) {
+  let checked = true;
+  fetch("http://localhost:5000/segment/list")
+    .then((response) => response.json())
+    .then((data) => {
+      data.forEach((segment) => {
+        const radio = document.createElement("input");
+        radio.setAttribute("type", "radio");
+        radio.setAttribute("id", segment.id);
+        radio.addEventListener("click", () => {
+          const radios = document.querySelectorAll("input[type=radio]");
+          radios.forEach((r) => {
+            if (r.id !== radio.id) {
+              r.checked = false;
+            } else {
+              r.checked = true;
+            }
+          });
+        });
+
+        radio.setAttribute("value", segment.id);
+        if (checked) {
+          radio.checked = true;
+        }
+        checked = false;
+        const label = document.createElement("label");
+        label.innerHTML =
+          new Date(segment.start_time).toDateString() +
+          " " +
+          new Date(segment.start_time).toLocaleTimeString();
+
+        const li = document.createElement("li");
+        li.setAttribute("id", segment.id);
+        li.className = "list-group-item";
+        li.appendChild(radio);
+        li.appendChild(label);
+        listGroup.appendChild(li);
+      });
+    });
+}
+
 function view() {
   const mediaSource = new MediaSource();
   const video = document.getElementById("myVideo");
   video.src = URL.createObjectURL(mediaSource);
 
   mediaSource.addEventListener("sourceopen", () => {
-    fetch("http://localhost:5000/segment/video")
-    .then(response => response.blob())
-    .then(blob => {
-      const videoUrl = URL.createObjectURL(blob);
-      video.src = videoUrl;
-    });
+    fetch("http://localhost:5000/segment/video", {
+      method: "GET",
+      headers: {
+        "X-record-id": +document.querySelector("input:checked").value,
+      },
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        const videoUrl = URL.createObjectURL(blob);
+        video.src = videoUrl;
+      });
   });
 }
 
