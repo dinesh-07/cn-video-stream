@@ -66,7 +66,7 @@ function gotMedia(stream) {
     document.body.appendChild(a);
     a.style = "display: none";
     a.href = url;
-    a.download = `segment${count}.webm`;
+    a.download = `segment${count}.mp4`;
     a.click();
     newRecording = false;
     setTimeout(function () {
