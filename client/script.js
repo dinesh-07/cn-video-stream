@@ -114,7 +114,7 @@ if (listGroup) {
         }
         checked = false;
         const label = document.createElement("label");
-        label.innerHTML =
+        label.innerHTML = "Recorded at " +
           new Date(segment.start_time).toDateString() +
           " " +
           new Date(segment.start_time).toLocaleTimeString();
